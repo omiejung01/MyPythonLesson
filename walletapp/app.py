@@ -1,38 +1,75 @@
 
-class Character:
-    def __init__(self, name, vision):
-        self.__character_name = name
-        self.__vision = vision
-        self.__level = 1
-        # constructor
+# Built-in
+# Queue + Stack
 
-    def levelup(self):
-        self.__level += 1
+from queue import Queue, LifoQueue
 
-    def display(self):
-        print(self.__character_name + ' ' + self.__vision + ' Level:' + str(self.__level))
+def run_q():
+    # Initializing
+    q = Queue(maxsize=3)
 
-    def display2(self):
-        return self.__character_name + ' ' + self.__vision + ' Level:' + str(self.__level)
+    q.put(11) # Python built-in use "put" for Enqueue
+    q.put(12)
+    q.put(13)
 
-    def setCharacterName(self, new_name):
-        self.__character_name = new_name
+    if q.full():
+        print("Full")
+    else:
+        print("Not full")
 
+    print("Now, Dequeue the element out of Queue")
+
+    print(q.get()) # Python built-in use "get" for Dequeue
+
+    if q.full():
+        print("Full")
+    else:
+        print("Not full")
+
+    print(q.get())
+    print(q.get())
+
+    if q.empty():
+        print("Empty")
+    else:
+        print("Not empty")
+
+    print('Number of elements in a queue:' + str(q.qsize()))
+
+
+def run_stack():
+    # Initializing
+    stack = LifoQueue(maxsize=3)
+    stack.put(11) # Python built-in use "tut" for Push
+    stack.put(12)
+    stack.put(13)
+
+    if stack.full():
+        print("Full")
+    else:
+        print("Not full")
+
+    print("Now, POP() the element out of Stack")
+
+    print(stack.get()) # Python built-in use "Get" for Dequeue
+
+    if stack.full():
+        print("Full")
+    else:
+        print("Not full")
+
+    print(stack.get())
+    print(stack.get())
+
+    if stack.empty():
+        print("Empty")
+    else:
+        print("Not empty")
+
+    print('Number of elements in a stack:' + str(stack.qsize()))
 
 def run():
+    #run_q()
+    run_stack()
 
-    print('Python class')
-    barbatos = Character('Venti','Anemo')
-    # create instance 'barbatos' from class 'Character'
-    print(barbatos.character_name)
 
-    beelzebub = Character('Ei','Electro')
-    print(beelzebub.character_name)
-    beelzebub.display()
-    beelzebub.setCharacterName('Raiden Shogun')
-    print(beelzebub.display2())
-
-    #barbatos.level = 20 Logic error
-
-    beelzebub.levelup()
-    print(beelzebub.display2())

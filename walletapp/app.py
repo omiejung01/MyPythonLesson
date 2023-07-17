@@ -1,69 +1,38 @@
-
-
-class Weapon:
-    def __init__(self,name,weapon_type):
-        self.__name = name
-        self.__weapon_type = weapon_type
-        self.__level = 1
-    def getName(self):
-        return self.__name
-
-    def getWeapon_type(self):
-        return self.__weapon_type
-
-
-class Character:
-    def __init__(self, name, vision, weapon_type):
-        default_weapon = Weapon('None', 'None')
-
-        self.__character_name = name
-        self.__vision = vision
-        self.__level = 1
-        self.__weapon_type = weapon_type
-        self.__weapon = default_weapon
-        # constructor
-
-
-    def levelup(self):
-        self.__level += 1
+from datetime import datetime
+class Account():
+    def __init__(self,account_name,opening_balance):
+        self.__account_name = account_name
+        self.__balance = opening_balance
+        self.__created_date = datetime.now()
+        self.__activated = True
 
     def display(self):
-        print(self.__character_name + ' ' + self.__vision + ' Level:' + str(self.__level))
+        status = 'Deactivated'
+        if self.__activated:
+            status = 'Activated'
+        return self.__account_name + ' - since ' + self.__created_date.strftime("%b %d, %Y") + ' - status: ' + status
 
-    def display2(self):
-        return self.__character_name + ' ' + self.__vision + ' Level:' + str(self.__level)
+    def balanceInquiry(self):
+        # Balance Inquiry
+        return f"{self.__balance:,.2f}"
 
-    def display3(self):
-        return self.__character_name + ' ' + self.__vision + ' Level:' + str(self.__level) + ' ' + self.getWeapon().getName()
-    def setCharacterName(self, new_name):
-        self.__character_name = new_name
+class CreditCard(Account):
+    def __init__(self, credit, account_name, opening_balance):
+        self.__credit = credit
+        self.__due_date = None
+        self.__extended_limit = 0
+        self.__extended_unitil_date = None
+        super().__init__(account_name, opening_balance)
 
-    def setWeapon(self, weapon):
-        #print (self.__weapon_type)
-        #print (weapon.getWeapon_type())
-        if self.__weapon_type == weapon.getWeapon_type():
-            self.__weapon = weapon
-            return True
-        else:
-            print (self.__character_name + ' cannot hold the ' + weapon.getName())
-            return False
+    def display(self):
+        #Method override
+        return super().display() + ' credit: ' + f"{self.__credit:,.2f}"
 
-    def getWeapon(self):
-        return self.__weapon
 
 def run():
+    MyAccount1 = Account('Client #1', 5000)
+    print(MyAccount1.display())
 
-    print('Python class')
-    barbatos = Character('Venti','Anemo','Bow')
-    # create instance 'barbatos' from class 'Character'
-    amos_bow = Weapon('Amos Bow', 'Bow')
-    barbatos.setWeapon(amos_bow)
-    print(barbatos.display3())
+    MyAccount2 = CreditCard(20000, 'Client #2', 5000)
+    print(MyAccount2.display())
 
-    beelzebub = Character('Ei','Electro','Polearm')
-    beelzebub.setWeapon(amos_bow)
-
-    engulfing_lightning = Weapon('Engulfing Lightning','Polearm')
-    beelzebub.setWeapon(engulfing_lightning)
-
-    print(beelzebub.display3())

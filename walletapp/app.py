@@ -21,7 +21,7 @@ class CreditCard(Account):
         self.__credit = credit
         self.__due_date = None
         self.__extended_limit = 0
-        self.__extended_unitil_date = None
+        self.__extended_until_date = None
         super().__init__(account_name, opening_balance)
 
     def display(self):

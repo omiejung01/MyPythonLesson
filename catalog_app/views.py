@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from .models import Product
+from .forms import RegisterForm
+
 from django.http import HttpResponseRedirect, HttpResponse
 import json
+import bcrypt
 
 # Create your views here.
 def homepage(request):
@@ -36,3 +39,34 @@ def product_detail(request):
 
     qs_json = json.dumps(list[0])
     return HttpResponse(qs_json, content_type='application/json')
+
+
+def register2(request):
+    username = request.POST.get('username')
+    password = request.POST.get('id_password')
+
+    context = { # Clear data
+        'fullname': '',
+        'username': '',
+        'email': '',
+        'phone': '',
+        'password': '',
+        'gender': '',
+
+        'message': 'Username <b></b> is already taken.',
+    }
+    return render(request, 'register2.html', context)
+
+def register(request):
+    form = RegisterForm(request.POST)
+
+    context = { # Clear data
+        'fullname': '',
+        'username': '',
+        'email': '',
+        'phone': '',
+        'password': '',
+        'gender': '',
+
+    }
+    return render(request, 'register.html', {"form": form})

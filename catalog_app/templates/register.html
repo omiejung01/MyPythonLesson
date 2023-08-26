@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+{% load static %}
+<!-- Created By CodingLab - www.codinglabweb.com -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <title> Traveler Registration Form | Credit to CodingLab </title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+  <script>
+  function verify_password() {
+    var pw = document.getElementById("id_password").value;
+    var confirm_pw = document.getElementById("id_confirm_password").value;
+    //check empty password field
+    if (pw != confirm_pw) {
+      document.getElementById("btn_register").disabled=true;
+      document.getElementById("message").innerHTML = "Password mismatch!!";
+      document.getElementById("btn_register").disabled=true;
+      document.getElementById("btn_register").value = "(Incorrect information)";
+
+    } else if(pw == "") {
+      document.getElementById("btn_register").disabled=true;
+      document.getElementById("message").innerHTML = "*Password cannot be blank.";
+      document.getElementById("btn_register").disabled=true;
+      document.getElementById("btn_register").value = "(Incorrect information)";
+    //minimum password length validation
+    } else if(pw.length < 4) {
+      document.getElementById("message").innerHTML = "**Password length must be atleast 4 characters";
+      document.getElementById("btn_register").disabled=true;
+      document.getElementById("btn_register").value = "(Incorrect information)";
+    } else if(pw.length > 24) {
+      //maximum length of password validation
+
+      document.getElementById("message").innerHTML = "**Password length must not exceed 24 characters";
+      document.getElementById("btn_register").disabled=true;
+      document.getElementById("btn_register").value = "(Incorrect information)";
+
+
+    } else {
+      document.getElementById("btn_register").disabled=false;
+      document.getElementById("btn_register").value = "Click here to Register";
+    }
+
+
+  }
+
+
+
+  </script>
+<body>
+  <div class="container">
+    <div class="title">Traveler Registration</div>
+    <div class="content">
+      <form action="#">
+        <div class="user-details">
+          {% csrf_token %}
+
+          <div class="input-box">
+            <span class="details">Full Name</span>
+            {{ form.fullname }}
+            <!-- <input type="text" placeholder="Enter your name" required> -->
+          </div>
+          <div class="input-box">
+            <span class="details">Username</span>
+            {{ form.username }}
+
+          </div>
+          <div class="input-box">
+            <span class="details">Email</span>
+            {{ form.email }}
+          </div>
+          <div class="input-box">
+            <span class="details">Phone Number</span>
+            {{ form.phone }}
+          </div>
+          <div class="input-box">
+            <span class="details">Password</span>
+            {{ form.password }}
+          </div>
+          <div class="input-box">
+            <span class="details">Confirm Password</span>
+            {{ form.confirm_password }}
+          </div>
+          <div id="message">
+
+          </div>
+        </div>
+        <div class="button">
+          <input type="submit" value="(Fill the above information to continue)" id="btn_register" disabled="true">
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

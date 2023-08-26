@@ -34,3 +34,29 @@ class Product(models.Model):
     def __str__(self):
         return self.product_id
 
+
+
+class Traveler(models.Model):
+    UID = models.UUIDField #Computer fields
+
+    # Business fields
+    fullname = models.CharField(max_length=20)
+    username = models.CharField(max_length=200)
+    email = models.CharField(max_length=50)
+    phone = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
+    password = models.CharField(max_length=250)
+
+    # Database fields
+    created_by = models.CharField(max_length=30, default='Auto')
+    created_time = models.DateTimeField(auto_now_add=True)
+    updated_time = models.DateTimeField(auto_now=True)
+    updated_by = models.CharField(max_length=30, default='Auto')
+    void = models.CharField(max_length=1,
+                            choices=VOID_CHOICES,
+                            default="0")
+
+    class Meta:
+        ordering = ['-created_time']
+
+    def __str__(self):
+        return self.username

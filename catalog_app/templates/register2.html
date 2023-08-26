@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title> Traveler Registration Confirm | Credit to CodingLab </title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+
+<body>
+<div class="container">
+    <div class="title">Traveler Registration Confirmation</div>
+    <div class="content">
+      {{ request.message }}
+    </div>
+</div>
+</body>
+</html>

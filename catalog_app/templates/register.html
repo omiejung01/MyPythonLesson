@@ -38,21 +38,19 @@
 
 
     } else {
+      document.getElementById("message").innerHTML = "";
       document.getElementById("btn_register").disabled=false;
       document.getElementById("btn_register").value = "Click here to Register";
     }
 
 
   }
-
-
-
   </script>
 <body>
   <div class="container">
     <div class="title">Traveler Registration</div>
     <div class="content">
-      <form action="#">
+      <form action="register2" method="POST">
         <div class="user-details">
           {% csrf_token %}
 

@@ -1,10 +1,13 @@
 from django.shortcuts import render
-from .models import Product
-from .forms import RegisterForm
+from .models import Product, Traveler
+from .forms import RegisterForm, LoginForm
 
 from django.http import HttpResponseRedirect, HttpResponse
 import json
 import bcrypt
+
+def my_salt():
+    return ('$2b$12$tUimG74HOCBiAA7sm3QX9e').encode('utf-8')
 
 # Create your views here.
 def homepage(request):
@@ -42,19 +45,50 @@ def product_detail(request):
 
 
 def register2(request):
-    username = request.POST.get('username')
-    password = request.POST.get('id_password')
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = RegisterForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            traveler = Traveler()
+            form.clean()
+            traveler.fullname = form.cleaned_data['fullname'].strip()
+            traveler.username = form.cleaned_data['username'].strip()
+            traveler.email = form.cleaned_data['email'].strip()
+            traveler.phone = form.cleaned_data['phone'].strip()
 
-    context = { # Clear data
-        'fullname': '',
-        'username': '',
-        'email': '',
-        'phone': '',
-        'password': '',
-        'gender': '',
+            input_password = form.cleaned_data['password'].strip()
 
-        'message': 'Username <b></b> is already taken.',
-    }
+            bytePwd = input_password.encode('utf-8')
+            hash = bcrypt.hashpw(bytePwd, my_salt())
+
+            traveler.password = hash.decode('utf-8')
+            traveler.save()
+            # print(post.Email)
+            # print(form.Password1)
+
+            # context = {"current_email": newuser.email,
+            #           "password": newuser.password,
+            #           }
+
+            request.session['new_username'] = traveler.username
+            #request.session['new_password'] = newuser.password
+            #request.session['display_name'] = newuser.display_name
+
+            context = {
+                'message': 'User ' + traveler.username + ' registered',
+            }
+
+            return render(request, 'register2.html', context)
+    else:
+
+        context = {
+            'message': 'Error, user xx NOT registered',
+        }
+
     return render(request, 'register2.html', context)
 
 def register(request):
@@ -70,3 +104,57 @@ def register(request):
 
     }
     return render(request, 'register.html', {"form": form})
+
+def login(request):
+    form = LoginForm(request.POST)
+
+    context = { # Clear data
+        'email': '',
+        'password': '',
+
+    }
+    return render(request, 'login.html', {"form": form})
+
+def login2(request):
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = LoginForm(request.POST)
+        # check whether it's valid:
+
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            traveler = Traveler()
+            form.clean()
+            email = form.cleaned_data['email'].strip()
+            input_password = form.cleaned_data['password'].strip()
+
+            bytePwd = input_password.encode('utf-8')
+            hash = bcrypt.hashpw(bytePwd, my_salt())
+
+            password = hash.decode('utf-8')
+
+            #print (email)
+            #print (password)
+
+            alltravelers = Traveler.objects.filter(email=email).filter(password=password)
+            if len(alltravelers) > 0:
+                current_traveler = alltravelers[0]
+                request.session['username'] = current_traveler.username
+                #request.session['new_password'] = newuser.password
+                #request.session['display_name'] = newuser.display_name
+
+                context = {
+                    'message': 'Successfully Login, welcome ' + request.session['username'],
+                }
+
+                return render(request, 'login2.html', context)
+            else:
+
+                context = {
+                    'message': 'Error, Password or Email are incorrect',
+                }
+
+
+                return render(request, 'login2.html', context)

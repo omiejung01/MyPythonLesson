@@ -29,3 +29,10 @@ class RegisterForm(forms.Form):
                }),required=True)
 
 
+class LoginForm(forms.Form):
+    email = forms.CharField(label='', max_length=100, widget=forms.TextInput(
+        attrs={'placeholder': 'Enter your email',
+               }),required=True)
+    password = forms.CharField(label='', max_length=100, widget=forms.PasswordInput(
+        attrs={'placeholder': 'Enter your password',
+               }),required=True)

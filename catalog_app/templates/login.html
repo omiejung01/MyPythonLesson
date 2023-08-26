@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Traveler Login Page</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+  <div class="container">
+    <div class="title">Traveler Login</div>
+    <div class="content">
+      <form action="login2" method="POST">
+        <div class="user-details">
+          {% csrf_token %}
+
+          <div class="input-box">
+            <span class="details">Email</span>
+            {{ form.email }}
+            <!-- <input type="text" placeholder="Enter your name" required> -->
+          </div>
+          <div class="input-box">
+            <span class="details"></span>
+
+          </div>
+          <div class="input-box">
+            <span class="details">Password</span>
+            {{ form.password }}
+          </div>
+        </div>
+        <div class="button">
+          <input type="submit" value="Login" id="btn_login">
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+</body>
+</html>

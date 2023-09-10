@@ -82,3 +82,43 @@ def transfer(request):
     }]
     qs_json = json.dumps(list[0])
     return HttpResponse(qs_json, content_type='application/json')
+
+
+def account_balance(account_id):
+    this_Account = Account()
+
+    for x in Account.objects.filter(account_id=account_id).filter(void=0):
+        this_account = x
+
+    debit_amount = 0
+
+    for x in Transfer.objects.filter(account_to=account_id).filter(void=0):
+        debit_amount += x.amount
+
+    credit_amount = 0
+
+    for x in Transfer.objects.filter(account_from=account_id).filter(void=0):
+        credit_amount += x.amount
+
+    return debit_amount - credit_amount
+
+
+def check_balance(request):
+    account_id = request.GET.get('account_id')
+    this_account = Account()
+
+    balance = account_balance(account_id)
+
+    for x in Account.objects.filter(account_id=account_id).filter(void=0):
+        this_account = x
+
+    list = [{
+        'account_id': this_account.account_id,
+        'account_name': this_account.account_name,
+        'balance': "{:.2f}".format(balance) + ' Baht',
+    }]
+    qs_json = json.dumps(list[0])
+    return HttpResponse(qs_json, content_type='application/json')
+
+
+

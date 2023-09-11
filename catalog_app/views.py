@@ -15,6 +15,9 @@ def homepage(request):
 
 def register_account(request):
     account_name = request.GET.get('account_name')
+    account_type = request.GET.get('account_type')
+    remarks = request.GET.get('remarks')
+
     new_account = Account()
 
     # Auto Increment
@@ -28,12 +31,16 @@ def register_account(request):
     account_num += 1
     new_account.account_id = 'MSME' + f"{account_num:07d}"
     new_account.account_name = account_name
+    new_account.account_type = account_type
+    new_account.remarks = remarks
 
     new_account.save()
 
     list = [{
                 'account_id': new_account.account_id,
                 'account_name': new_account.account_name,
+                'account_type': new_account.account_name,
+                'remarks': new_account.remarks,
                 'result': 'Success',
     }]
     qs_json = json.dumps(list[0])
@@ -43,12 +50,10 @@ def register_account(request):
 def transfer(request):
     from_account = request.GET.get('from_account')
     to_account = request.GET.get('to_account')
-    amount  = request.GET.get('amount')
+    amount = request.GET.get('amount')
     remark = request.GET.get('remark')
 
-
     new_transfer = Transfer()
-
     # Auto Increment
     last_transfer = Transfer()
 
@@ -85,7 +90,7 @@ def transfer(request):
 
 
 def account_balance(account_id):
-    this_Account = Account()
+    this_account = Account()
 
     for x in Account.objects.filter(account_id=account_id).filter(void=0):
         this_account = x
@@ -100,7 +105,10 @@ def account_balance(account_id):
     for x in Transfer.objects.filter(account_from=account_id).filter(void=0):
         credit_amount += x.amount
 
-    return debit_amount - credit_amount
+    if this_account.account_type == 'Asset':
+        return debit_amount - credit_amount
+    else:
+        return credit_amount - debit_amount
 
 
 def check_balance(request):

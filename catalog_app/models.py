@@ -14,8 +14,8 @@ class Account(models.Model):
     # Business fields
     account_id = models.CharField(max_length=20)
     account_name = models.CharField(max_length=200)
-    account_type = models.CharField(max_length=200)
-    remarks = models.CharField(max_length=200)
+    account_type = models.CharField(max_length=200,default="Liability")
+    remarks = models.CharField(max_length=200,default="")
 
     # Database fields
     created_by = models.CharField(max_length=30, default='Auto')

@@ -61,7 +61,7 @@ def transfer(request):
         last_transfer = x
 
     if Transfer.objects.exists():
-        transfer_num = int(last_transfer.transfer_id.replace('NLB', ''))  # Norhlan Bank
+        transfer_num = int(last_transfer.transfer_id.replace('NLB', ''))  # Northlan Bank
         transfer_num += 1
     else:
         transfer_num = 1
@@ -74,19 +74,40 @@ def transfer(request):
     new_transfer.amount = float(amount)
     new_transfer.remark = remark
 
+    allowed = True
 
-    new_transfer.save()
+    #if remark=='Initial' and from_account == 'MSME0000001': #Special case
+    #    allowed = True
+    #else:
+        # Check From_Account's Balance
+    #    from_balance = account_balance(from_account)
+    #    if from_balance >= float(amount):
+    #        allowed = True
+    #    else:
+    #        allowed = False
 
-    list = [{
+    if allowed:
+        new_transfer.save()
+
+        list = [{
             'transfer_id': new_transfer.transfer_id,
             'from_account' : new_transfer.account_from,
             'to_account' : new_transfer.account_to,
             'amount' : str(new_transfer.amount),
             'remark' : new_transfer.remark,
             'result': 'Success',
-    }]
-    qs_json = json.dumps(list[0])
-    return HttpResponse(qs_json, content_type='application/json')
+        }]
+        qs_json = json.dumps(list[0])
+        return HttpResponse(qs_json, content_type='application/json')
+    else:
+        list = [{
+
+            'remark': 'Transaction is not allowed',
+            'result': 'Failure',
+        }]
+        qs_json = json.dumps(list[0])
+        return HttpResponse(qs_json, content_type='application/json')
+
 
 
 def account_balance(account_id):
@@ -123,6 +144,7 @@ def check_balance(request):
     list = [{
         'account_id': this_account.account_id,
         'account_name': this_account.account_name,
+        'account_type': this_account.account_type,
         'balance': "{:.2f}".format(balance) + ' Baht',
     }]
     qs_json = json.dumps(list[0])

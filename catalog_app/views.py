@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from .models import Account, Transfer
 
+from django.db.models import Q
+
 from django.http import HttpResponseRedirect, HttpResponse
 import json
 
@@ -74,17 +76,27 @@ def transfer(request):
     new_transfer.amount = float(amount)
     new_transfer.remark = remark
 
-    allowed = True
+    allowed = False
 
-    #if remark=='Initial' and from_account == 'MSME0000001': #Special case
-    #    allowed = True
-    #else:
+    if remark=='Initial' and from_account == 'MSME0000001': #Initial
+        allowed = True
+    elif remark == 'Deposit' and to_account == 'MSME0000002': #Deposit
+        allowed = True
+    elif remark in ['Purchase','Withdraw']:  # Purchase
+        # Check To_Account's Balance
+        to_balance = account_balance(to_account)
+        if to_balance >= float(amount):
+            allowed = True
+        else:
+            allowed = False
+    else:
         # Check From_Account's Balance
-    #    from_balance = account_balance(from_account)
-    #    if from_balance >= float(amount):
-    #        allowed = True
-    #    else:
-    #        allowed = False
+        # No use case yet, this code will get -2 score for each block
+        from_balance = account_balance(from_account)
+        if from_balance >= float(amount):
+            allowed = True
+        else:
+            allowed = False
 
     if allowed:
         new_transfer.save()
@@ -150,5 +162,29 @@ def check_balance(request):
     qs_json = json.dumps(list[0])
     return HttpResponse(qs_json, content_type='application/json')
 
+def transfer_list(request):
+    account_id = request.GET.get('account_id','None') #Polymorphism version Django request
 
+    if account_id == 'None':
+        list = [{'id': x.transfer_id, 'to': x.account_to, 'from': x.account_from, 'amount': str(x.amount), 'remark': x.remark,
+                 'datetime':str(x.created_time),
+                 }
+                for x in Transfer.objects.filter(void=0).order_by('-created_time')]
+        # qs_json = serializers.serialize('json', list)
+        qs_json = json.dumps(list)
+        return HttpResponse(qs_json, content_type='application/json')
+    else:
+        # Need to import Q
+        # Check Both 'to' and 'from'
+        list = [{'id': x.transfer_id, 'to': x.account_to, 'from': x.account_from, 'amount': str(x.amount),
+                 'remark': x.remark,
+                 'datetime': str(x.created_time),
+                 }
+                for x in Transfer.objects.filter(void=0)
+                    .filter( Q(account_to=account_id) | Q(account_from=account_id)).order_by('-created_time')
+
+                ]
+        # qs_json = serializers.serialize('json', list)
+        qs_json = json.dumps(list)
+        return HttpResponse(qs_json, content_type='application/json')
 

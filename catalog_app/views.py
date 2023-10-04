@@ -158,3 +158,26 @@ def login2(request):
 
 
                 return render(request, 'login2.html', context)
+
+
+def app_login(request):
+    email = request.GET.get('email')
+    input_password = request.GET.get('password')
+
+    bytePwd = input_password.encode('utf-8')
+    hash = bcrypt.hashpw(bytePwd, my_salt())
+    password = hash.decode('utf-8')
+
+    result = [{
+        'email': x.email,
+    } for x in Traveler.objects.filter(email=email).filter(password=password).filter(void=0)]
+
+    #print (email)
+    print (result)
+    if len(result) > 0:
+        list = [{'Result':'Success','Email':email}]
+    else:
+        list = [{"result":"Failure", "email":"None"}]
+
+    qs_json = json.dumps(list[0])
+    return HttpResponse(qs_json, content_type='application/json')
